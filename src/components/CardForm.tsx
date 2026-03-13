@@ -1,4 +1,4 @@
-import { CardData } from '../types';
+import type { CardData } from '../types';
 import { ImageUpload } from './ImageUpload';
 import { TagInput } from './TagInput';
 import { StarRating } from './StarRating';

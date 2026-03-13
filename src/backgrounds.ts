@@ -1,4 +1,4 @@
-import { Background } from './types';
+import type { Background } from './types';
 
 export const backgrounds: Background[] = [
   { id: 'ocean-blue', name: 'Ocean Blue', from: '#0f3460', to: '#16213e' },

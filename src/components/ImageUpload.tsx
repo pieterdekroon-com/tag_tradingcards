@@ -1,4 +1,5 @@
-import { useRef, DragEvent, useState } from 'react';
+import { useRef, useState } from 'react';
+import type { DragEvent } from 'react';
 import styles from './ImageUpload.module.css';
 
 interface ImageUploadProps {

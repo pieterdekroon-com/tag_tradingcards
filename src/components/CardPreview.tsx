@@ -1,4 +1,4 @@
-import { CardData } from '../types';
+import type { CardData } from '../types';
 import { backgrounds } from '../backgrounds';
 import styles from './CardPreview.module.css';
 

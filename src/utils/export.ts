@@ -1,4 +1,4 @@
-import { CardData } from '../types';
+import type { CardData } from '../types';
 
 export function exportCardAsJson(card: CardData) {
   const slug = card.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'card';
