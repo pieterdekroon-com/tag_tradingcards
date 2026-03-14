@@ -60,30 +60,38 @@ A new Supabase project is created (free tier). Auth is configured with email/pas
 
 **themes**
 
-| Column     | Type         | Notes                              |
-|------------|--------------|------------------------------------|
-| id         | uuid (PK)    | Auto-generated                     |
-| name       | text         | e.g. "Ocean Blue"                  |
-| rarity     | text         | Common / Rare / Epic / Legendary   |
-| from_color | text         | Gradient start hex, e.g. "#0f3460" |
-| to_color   | text         | Gradient end hex, e.g. "#16213e"   |
-| created_at | timestamptz  | Auto                               |
+| Column     | Type         | Constraints      | Notes                              |
+|------------|--------------|------------------|------------------------------------|
+| id         | uuid (PK)    | auto-generated   |                                    |
+| slug       | text         | unique, not null | URL-safe identifier, e.g. "ocean-blue" |
+| name       | text         | not null         | Display name, e.g. "Ocean Blue"    |
+| rarity     | text         | not null         | Common / Rare / Epic / Legendary   |
+| from_color | text         | not null         | Gradient start hex, e.g. "#0f3460" |
+| to_color   | text         | not null         | Gradient end hex, e.g. "#16213e"   |
+| created_at | timestamptz  | auto             |                                    |
+| updated_at | timestamptz  | auto             |                                    |
 
 **specialties**
 
-| Column     | Type         | Notes                    |
-|------------|--------------|--------------------------|
-| id         | uuid (PK)    | Auto-generated           |
-| name       | text         | e.g. "Frontend"          |
-| created_at | timestamptz  | Auto                     |
+| Column     | Type         | Constraints      | Notes                    |
+|------------|--------------|------------------|--------------------------|
+| id         | uuid (PK)    | auto-generated   |                          |
+| name       | text         | unique, not null | e.g. "Frontend"          |
+| created_at | timestamptz  | auto             |                          |
+| updated_at | timestamptz  | auto             |                          |
 
 **descriptions**
 
-| Column     | Type         | Notes                              |
-|------------|--------------|------------------------------------|
-| id         | uuid (PK)    | Auto-generated                     |
-| text       | text         | e.g. "Breekt prod op vrijdagmiddag"|
-| created_at | timestamptz  | Auto                               |
+| Column     | Type         | Constraints      | Notes                              |
+|------------|--------------|------------------|------------------------------------|
+| id         | uuid (PK)    | auto-generated   |                                    |
+| text       | text         | unique, not null | e.g. "Breekt prod op vrijdagmiddag"|
+| created_at | timestamptz  | auto             |                                    |
+| updated_at | timestamptz  | auto             |                                    |
+
+### Column naming
+
+The database uses `from_color` / `to_color` (since `from` is a reserved word in SQL). The npm package types map these to `from` / `to` for a cleaner consumer API.
 
 ### Row Level Security
 
@@ -102,7 +110,7 @@ import { Tradingcards, TradingcardsProvider } from 'tradingcards'
   <App />
 </TradingcardsProvider>
 
-// Render a card
+// Render a card — theme is a slug, not a UUID
 <Tradingcards
   name="Pieter"
   image="/assets/pieter.jpg"
@@ -127,15 +135,28 @@ import { Tradingcards, TradingcardsProvider } from 'tradingcards'
 
 ### Props for `<Tradingcards />`
 
-| Prop         | Type       | Required | Notes                          |
-|--------------|------------|----------|--------------------------------|
-| name         | string     | yes      | Player name                    |
-| image        | string     | yes      | Image URL (provided by consumer)|
-| theme        | string     | yes      | Theme ID from Supabase          |
-| specialties  | string[]   | yes      | Selected specialty names        |
-| description  | string     | yes      | Selected description text       |
+| Prop         | Type       | Required | Notes                                  |
+|--------------|------------|----------|----------------------------------------|
+| name         | string     | yes      | Player name                            |
+| image        | string     | yes      | Image URL (provided by consumer)       |
+| theme        | string     | yes      | Theme slug, e.g. "ocean-blue"          |
+| specialties  | string[]   | yes      | Free-form strings displayed as badges  |
+| description  | string     | yes      | Free-form string displayed on card     |
+| className    | string     | no       | Additional CSS class for outer wrapper |
 
-The component fetches the theme's visual properties (gradient colors, rarity) from Supabase based on the theme ID. Rarity determines the card's visual tier (border style, effects).
+The component fetches the theme's visual properties (gradient colors, rarity) from Supabase based on the theme **slug**. Rarity determines the card's visual tier (border style, effects).
+
+**Note on specialties and descriptions:** The props accept free-form strings — the component does not validate them against Supabase data. The hooks (`useSpecialties()`, `useDescriptions()`) exist so consumers can fetch the predefined options and build their own selection UI, but the `<Tradingcards />` component renders whatever strings are passed. This keeps the component simple and gives consumers full control.
+
+### Loading & error states
+
+- While fetching theme data: the component renders a skeleton card (gradient placeholder, no content)
+- If the theme slug is not found: the component falls back to a default neutral gradient
+- If Supabase is unreachable: the component renders with the default fallback gradient and logs a warning to console
+
+### Supabase dependency
+
+`@supabase/supabase-js` is bundled within the package (not a peer dependency). This avoids version conflicts and simplifies installation for consumers who don't otherwise use Supabase.
 
 ### Styling
 
@@ -165,7 +186,7 @@ The package is built with Vite in library mode, outputting ESM. TypeScript decla
 - The existing CardForm + CardPreview, repurposed as a preview tool
 - Fetches themes/specialties/descriptions from Supabase instead of local arrays
 - Allows combining options to preview how a card looks
-- No save/export — purely visual testing
+- No save/export — purely visual testing (the JSON export feature is removed)
 
 **Navigation**
 - Simple tab navigation at the top (Dashboard / Preview)
