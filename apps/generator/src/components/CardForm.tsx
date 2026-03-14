@@ -1,21 +1,17 @@
 import type { CardData, Theme } from '../types';
-import { specialtyOptions, descriptionOptions } from '../presets';
 import { ImageUpload } from './ImageUpload';
 import { ThemePicker } from './ThemePicker';
-import { exportCardAsJson } from '../utils/export';
 import styles from './CardForm.module.css';
 
 interface CardFormProps {
   card: CardData;
   onChange: (card: CardData) => void;
   themes: Theme[];
-  defaultIds: Set<string>;
-  onAddTheme: (theme: Theme) => void;
-  onUpdateTheme: (theme: Theme) => void;
-  onRemoveTheme: (id: string) => void;
+  specialties: { id: string; name: string }[];
+  descriptions: { id: string; text: string }[];
 }
 
-export function CardForm({ card, onChange, themes, defaultIds, onAddTheme, onUpdateTheme, onRemoveTheme }: CardFormProps) {
+export function CardForm({ card, onChange, themes, specialties, descriptions }: CardFormProps) {
   function update(fields: Partial<CardData>) {
     onChange({ ...card, ...fields });
   }
@@ -46,14 +42,14 @@ export function CardForm({ card, onChange, themes, defaultIds, onAddTheme, onUpd
 
       <label className={styles.label}>SPECIALTIES</label>
       <div className={styles.chipGrid}>
-        {specialtyOptions.map((spec) => (
+        {specialties.map((s) => (
           <button
-            key={spec}
+            key={s.id}
             type="button"
-            className={`${styles.chip} ${card.specialties.includes(spec) ? styles.chipSelected : ''}`}
-            onClick={() => toggleSpecialty(spec)}
+            className={`${styles.chip} ${card.specialties.includes(s.name) ? styles.chipSelected : ''}`}
+            onClick={() => toggleSpecialty(s.name)}
           >
-            {spec}
+            {s.name}
           </button>
         ))}
       </div>
@@ -65,8 +61,8 @@ export function CardForm({ card, onChange, themes, defaultIds, onAddTheme, onUpd
         className={styles.select}
       >
         <option value="">Kies een beschrijving...</option>
-        {descriptionOptions.map((desc) => (
-          <option key={desc} value={desc}>{desc}</option>
+        {descriptions.map((d) => (
+          <option key={d.id} value={d.text}>{d.text}</option>
         ))}
       </select>
 
@@ -75,19 +71,7 @@ export function CardForm({ card, onChange, themes, defaultIds, onAddTheme, onUpd
         selected={card.theme}
         onChange={(theme) => update({ theme })}
         themes={themes}
-        defaultIds={defaultIds}
-        onAddTheme={onAddTheme}
-        onUpdateTheme={onUpdateTheme}
-        onRemoveTheme={onRemoveTheme}
       />
-
-      <button
-        type="button"
-        className={styles.exportBtn}
-        onClick={() => exportCardAsJson(card)}
-      >
-        ↓ EXPORT JSON
-      </button>
     </div>
   );
 }

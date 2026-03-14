@@ -1,6 +1,45 @@
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-surface);
+  padding: 0 32px;
+  flex-shrink: 0;
+}
+
+.tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.tab:hover {
+  color: var(--text-primary);
+}
+
+.tabActive {
+  color: var(--text-primary);
+  border-bottom-color: var(--text-primary);
+}
+
 .layout {
   display: flex;
-  height: 100vh;
+  flex: 1;
+  overflow: hidden;
 }
 
 .formPanel {
@@ -8,6 +47,7 @@
   min-width: 420px;
   background: var(--bg-surface);
   border-right: 1px solid var(--border);
+  overflow-y: auto;
 }
 
 .previewPanel {

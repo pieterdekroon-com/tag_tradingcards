@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
-import type { Session } from '@supabase/supabase-js';
-import { supabase } from './lib/supabase';
-import type { CardData, Theme } from './types';
-import { themes as defaultThemes } from './themes';
-import { CardForm } from './components/CardForm';
-import { CardPreview } from './components/CardPreview';
-import { Login } from './pages/Login';
-import styles from './App.module.css';
+import { useState, useEffect } from 'react'
+import type { Session } from '@supabase/supabase-js'
+import { supabase } from './lib/supabase'
+import type { CardData, Theme } from './types'
+import { fetchThemes, fetchSpecialties, fetchDescriptions } from './lib/api'
+import type { DbSpecialty, DbDescription } from './lib/api'
+import { CardForm } from './components/CardForm'
+import { CardPreview } from './components/CardPreview'
+import { Login } from './pages/Login'
+import { Dashboard } from './pages/Dashboard'
+import styles from './App.module.css'
 
-const defaultIds = new Set(defaultThemes.map((t) => t.id));
+type View = 'dashboard' | 'preview'
 
 const initialCard: CardData = {
   id: crypto.randomUUID(),
@@ -17,69 +19,88 @@ const initialCard: CardData = {
   specialties: [],
   description: '',
   theme: 'ocean-blue',
-};
+}
 
 function App() {
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [card, setCard] = useState<CardData>(initialCard);
-  const [themes, setThemes] = useState<Theme[]>(defaultThemes);
+  const [session, setSession] = useState<Session | null>(null)
+  const [authLoading, setAuthLoading] = useState(true)
+  const [view, setView] = useState<View>('dashboard')
+
+  // Preview state
+  const [card, setCard] = useState<CardData>(initialCard)
+  const [themes, setThemes] = useState<Theme[]>([])
+  const [specialties, setSpecialties] = useState<DbSpecialty[]>([])
+  const [descriptions, setDescriptions] = useState<DbDescription[]>([])
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
-      setLoading(false);
-    });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+      setAuthLoading(false)
+    })
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, s) => {
-      setSession(s);
-    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => subscription.unsubscribe()
+  }, [])
 
-  function addTheme(theme: Theme) {
-    setThemes((prev) => [...prev, theme]);
-  }
-
-  function updateTheme(updated: Theme) {
-    setThemes((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
-  }
-
-  function removeTheme(id: string) {
-    if (defaultIds.has(id)) return;
-    setThemes((prev) => prev.filter((t) => t.id !== id));
-    if (card.theme === id) {
-      setCard((c) => ({ ...c, theme: 'ocean-blue' }));
+  // Load data when switching to preview
+  useEffect(() => {
+    if (view === 'preview' && session) {
+      Promise.all([fetchThemes(), fetchSpecialties(), fetchDescriptions()]).then(
+        ([t, s, d]) => {
+          setThemes(t)
+          setSpecialties(s)
+          setDescriptions(d)
+        }
+      )
     }
-  }
+  }, [view, session])
 
-  if (loading) return null;
+  if (authLoading) return null
 
   if (!session) {
-    return <Login onLogin={() => {}} />;
+    return <Login onLogin={() => {}} />
   }
 
   return (
-    <div className={styles.layout}>
-      <div className={styles.formPanel}>
-        <CardForm
-          card={card}
-          onChange={setCard}
-          themes={themes}
-          defaultIds={defaultIds}
-          onAddTheme={addTheme}
-          onUpdateTheme={updateTheme}
-          onRemoveTheme={removeTheme}
-        />
-      </div>
-      <div className={styles.previewPanel}>
-        <CardPreview card={card} themes={themes} />
-      </div>
+    <div className={styles.app}>
+      <nav className={styles.nav}>
+        <button
+          className={`${styles.tab} ${view === 'dashboard' ? styles.tabActive : ''}`}
+          onClick={() => setView('dashboard')}
+        >
+          Dashboard
+        </button>
+        <button
+          className={`${styles.tab} ${view === 'preview' ? styles.tabActive : ''}`}
+          onClick={() => setView('preview')}
+        >
+          Preview
+        </button>
+      </nav>
+
+      {view === 'dashboard' ? (
+        <Dashboard onLogout={() => setSession(null)} />
+      ) : (
+        <div className={styles.layout}>
+          <div className={styles.formPanel}>
+            <CardForm
+              card={card}
+              onChange={setCard}
+              themes={themes}
+              specialties={specialties}
+              descriptions={descriptions}
+            />
+          </div>
+          <div className={styles.previewPanel}>
+            <CardPreview card={card} themes={themes} />
+          </div>
+        </div>
+      )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
