@@ -160,7 +160,13 @@ The component fetches the theme's visual properties (gradient colors, rarity) fr
 
 ### Styling
 
-CSS is bundled within the package. No external stylesheet required by the consumer.
+CSS is bundled within the package as a separate `style.css` file. Consumers import it once:
+
+```tsx
+import 'tradingcards/style.css'
+```
+
+All class names are prefixed with `tc-` to avoid collisions with the consumer's styles.
 
 ### Build
 
