@@ -1,7 +1,6 @@
 # TAG Trading Cards
 
-A client-side trading card generator built with React and TypeScript. Design custom digital trading cards with live preview, custom themes, and image cropping.
-
+A client-side trading card generator built with React and TypeScript. Design custom digital trading cards.
 ## Features
 
 - **Live card preview** — side-by-side editor with real-time card rendering
