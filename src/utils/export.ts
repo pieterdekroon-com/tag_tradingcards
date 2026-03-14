@@ -8,7 +8,7 @@ export function exportCardAsJson(card: CardData) {
 
   const a = document.createElement('a');
   a.href = url;
-  a.download = `tradecade-${slug}.json`;
+  a.download = `tradingcards-${slug}.json`;
   a.click();
 
   URL.revokeObjectURL(url);

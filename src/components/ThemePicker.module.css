@@ -1,0 +1,389 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rarityLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.common { color: var(--text-muted); }
+.rare { color: #0984e3; }
+.epic { color: #7b2cbf; }
+.legendary { color: #ffd700; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 72px);
+  gap: 8px;
+}
+
+/* ── Tile ── */
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.tileGradient {
+  width: 72px;
+  height: 72px;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover per rarity */
+.tile:hover .tileGradient {
+  transform: translateY(-2px);
+}
+
+.tile.common:hover .tileGradient {
+  border-color: var(--text-dim);
+}
+
+.tile.rare:hover .tileGradient {
+  border-color: rgba(9, 132, 227, 0.5);
+  box-shadow: 0 4px 12px rgba(9, 132, 227, 0.15);
+}
+
+.tile.epic:hover .tileGradient {
+  border-color: rgba(147, 51, 234, 0.5);
+  box-shadow: 0 4px 14px rgba(147, 51, 234, 0.2);
+}
+
+.tile.legendary:hover .tileGradient {
+  border-color: rgba(255, 215, 0, 0.5);
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.2);
+}
+
+/* Selected state */
+.tile.selected .tileGradient {
+  transform: translateY(-2px);
+}
+
+.tile.selected.common .tileGradient {
+  border-color: var(--text-primary);
+  box-shadow: 0 4px 12px rgba(240, 236, 226, 0.1);
+}
+
+.tile.selected.rare .tileGradient {
+  border-color: #0984e3;
+  box-shadow:
+    0 4px 12px rgba(9, 132, 227, 0.25),
+    0 0 20px rgba(9, 132, 227, 0.1);
+}
+
+.tile.selected.epic .tileGradient {
+  border-color: #9333ea;
+  box-shadow:
+    0 4px 14px rgba(147, 51, 234, 0.3),
+    0 0 24px rgba(147, 51, 234, 0.12);
+}
+
+.tile.selected.legendary .tileGradient {
+  border-color: #ffd700;
+  box-shadow:
+    0 4px 16px rgba(255, 215, 0, 0.3),
+    0 0 28px rgba(255, 215, 0, 0.12);
+}
+
+/* ── Name label ── */
+
+.tileName {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+  text-align: center;
+  width: 72px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease;
+}
+
+.tile:hover .tileName {
+  color: var(--text-muted);
+}
+
+.tile.selected .tileName {
+  color: var(--text-primary);
+}
+
+.tile.selected.rare .tileName { color: #4da8e8; }
+.tile.selected.epic .tileName { color: #a855f7; }
+.tile.selected.legendary .tileName { color: #ffd700; }
+
+/* ── Tile wrapper (for remove button) ── */
+
+.tileWrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.editBtn {
+  position: absolute;
+  bottom: 18px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-deep);
+  color: var(--text-dim);
+  font-size: 9px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+  z-index: 1;
+  padding: 0;
+}
+
+.tileWrapper:hover .editBtn {
+  opacity: 1;
+}
+
+.editBtn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+.tile.editing .tileGradient {
+  border-color: var(--text-primary);
+  border-style: dashed;
+}
+
+.removeBtn {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-deep);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+  z-index: 1;
+}
+
+.tileWrapper:hover .removeBtn {
+  opacity: 1;
+}
+
+.removeBtn:hover {
+  color: #e94560;
+  border-color: #e94560;
+}
+
+/* ── Add button ── */
+
+.addBtn {
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.addBtn:hover {
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+}
+
+/* ── Modal overlay ── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  width: 320px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modalTitle {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+}
+
+.creatorInput {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 8px 10px;
+  outline: none;
+}
+
+.creatorInput:focus {
+  border-color: var(--text-dim);
+}
+
+.creatorInput::placeholder {
+  color: var(--text-dim);
+}
+
+.colorRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.colorLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.colorPicker {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  background: none;
+  padding: 2px;
+}
+
+.colorPreview {
+  flex: 1;
+  height: 40px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+.rarityRow {
+  display: flex;
+  gap: 6px;
+}
+
+.rarityChip {
+  flex: 1;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 6px 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.rarityChip.common { color: var(--text-dim); }
+.rarityChip.rare { color: #4da8e8; }
+.rarityChip.epic { color: #a855f7; }
+.rarityChip.legendary { color: #ffd700; }
+
+.rarityChipSelected {
+  background: var(--bg-elevated);
+}
+
+.rarityChipSelected.common { border-color: var(--text-muted); }
+.rarityChipSelected.rare { border-color: #0984e3; }
+.rarityChipSelected.epic { border-color: #9333ea; }
+.rarityChipSelected.legendary { border-color: #ffd700; }
+
+.creatorActions {
+  display: flex;
+  gap: 8px;
+}
+
+.createBtn {
+  flex: 1;
+  background: var(--text-primary);
+  color: var(--bg-deep);
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.createBtn:hover {
+  opacity: 0.85;
+}
+
+.cancelBtn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cancelBtn:hover {
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+}

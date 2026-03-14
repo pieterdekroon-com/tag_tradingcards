@@ -6,8 +6,18 @@ A Vite + React (TypeScript) webapp for creating and configuring digital TAG trad
 ## Tech Stack
 - **Vite + React** with TypeScript
 - **CSS Modules** for component styling
+- **Google Font: Syne** for headings/display text (matches tag.space branding)
 - No UI library — custom styling only
 - No backend — fully client-side
+
+## Visual Style (tag.space inspired)
+- **Dark theme** — deep charcoal background, warm off-white text
+- **Font: Syne** — bold, large for headings and card branding
+- **Grain texture** — subtle SVG noise overlay for tactile feel
+- **Minimal UI** — lots of breathing room, clean lines, muted secondary tones
+- **Monospace accents** — for labels, metadata, small UI text
+- **Subtle borders** — thin, low-contrast dividers
+- **Hover transitions** — smooth state changes on interactive elements
 
 ## Layout
 Side-by-side split view:
@@ -24,7 +34,7 @@ Side-by-side split view:
   "specialties": ["Frontend", "Design"],
   "level": 3,
   "description": "Short bio text",
-  "background": "gradient-blue"
+  "background": "ocean-blue"
 }
 ```
 

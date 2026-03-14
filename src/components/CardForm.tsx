@@ -1,24 +1,35 @@
-import type { CardData } from '../types';
+import type { CardData, Theme } from '../types';
+import { specialtyOptions, descriptionOptions } from '../presets';
 import { ImageUpload } from './ImageUpload';
-import { TagInput } from './TagInput';
-import { StarRating } from './StarRating';
-import { BackgroundPicker } from './BackgroundPicker';
+import { ThemePicker } from './ThemePicker';
 import { exportCardAsJson } from '../utils/export';
 import styles from './CardForm.module.css';
 
 interface CardFormProps {
   card: CardData;
   onChange: (card: CardData) => void;
+  themes: Theme[];
+  defaultIds: Set<string>;
+  onAddTheme: (theme: Theme) => void;
+  onUpdateTheme: (theme: Theme) => void;
+  onRemoveTheme: (id: string) => void;
 }
 
-export function CardForm({ card, onChange }: CardFormProps) {
+export function CardForm({ card, onChange, themes, defaultIds, onAddTheme, onUpdateTheme, onRemoveTheme }: CardFormProps) {
   function update(fields: Partial<CardData>) {
     onChange({ ...card, ...fields });
   }
 
+  function toggleSpecialty(spec: string) {
+    const next = card.specialties.includes(spec)
+      ? card.specialties.filter((s) => s !== spec)
+      : card.specialties.length >= 3 ? card.specialties : [...card.specialties, spec];
+    update({ specialties: next });
+  }
+
   return (
     <div className={styles.form}>
-      <h1 className={styles.title}>TRADECADE</h1>
+      <h1 className={styles.title}>TAG CARDS</h1>
       <p className={styles.subtitle}>Card Generator</p>
 
       <label className={styles.label}>NAME</label>
@@ -34,22 +45,41 @@ export function CardForm({ card, onChange }: CardFormProps) {
       <ImageUpload image={card.image} onChange={(image) => update({ image })} />
 
       <label className={styles.label}>SPECIALTIES</label>
-      <TagInput tags={card.specialties} onChange={(specialties) => update({ specialties })} />
-
-      <label className={styles.label}>LEVEL</label>
-      <StarRating value={card.level} onChange={(level) => update({ level })} />
+      <div className={styles.chipGrid}>
+        {specialtyOptions.map((spec) => (
+          <button
+            key={spec}
+            type="button"
+            className={`${styles.chip} ${card.specialties.includes(spec) ? styles.chipSelected : ''}`}
+            onClick={() => toggleSpecialty(spec)}
+          >
+            {spec}
+          </button>
+        ))}
+      </div>
 
       <label className={styles.label}>DESCRIPTION</label>
-      <textarea
+      <select
         value={card.description}
         onChange={(e) => update({ description: e.target.value })}
-        placeholder="Short bio..."
-        rows={3}
-        className={styles.textarea}
-      />
+        className={styles.select}
+      >
+        <option value="">Kies een beschrijving...</option>
+        {descriptionOptions.map((desc) => (
+          <option key={desc} value={desc}>{desc}</option>
+        ))}
+      </select>
 
-      <label className={styles.label}>BACKGROUND</label>
-      <BackgroundPicker selected={card.background} onChange={(background) => update({ background })} />
+      <label className={styles.label}>THEME</label>
+      <ThemePicker
+        selected={card.theme}
+        onChange={(theme) => update({ theme })}
+        themes={themes}
+        defaultIds={defaultIds}
+        onAddTheme={onAddTheme}
+        onUpdateTheme={onUpdateTheme}
+        onRemoveTheme={onRemoveTheme}
+      />
 
       <button
         type="button"
