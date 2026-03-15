@@ -1,10 +1,17 @@
 {
   "name": "tradingcards",
   "version": "0.1.0",
-  "description": "Trading card React component and Supabase hooks",
+  "description": "Trading card React component with Supabase-backed themes and data hooks",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./style.css": "./dist/style.css"
+  },
   "files": [
     "dist"
   ],
@@ -13,18 +20,19 @@
   },
   "peerDependencies": {
     "react": ">=18",
-    "react-dom": ">=18"
+    "react-dom": ">=18",
+    "@supabase/supabase-js": ">=2.0.0"
   },
   "devDependencies": {
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "@supabase/supabase-js": "^2.99.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "typescript": "^5.9.3",
     "vite": "^8.0.0"
   },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.99.1"
-  }
+  "keywords": ["react", "trading-cards", "component", "supabase"],
+  "license": "MIT"
 }
