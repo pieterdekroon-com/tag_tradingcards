@@ -9,7 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc --emitDeclarationOnly && vite build"
+    "build": "vite build && tsc --emitDeclarationOnly"
   },
   "peerDependencies": {
     "react": ">=18",
