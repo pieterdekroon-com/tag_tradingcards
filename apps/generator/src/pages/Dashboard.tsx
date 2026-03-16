@@ -74,28 +74,29 @@ export function Dashboard({ onLogout }: DashboardProps) {
   }
 
   async function handleSaveTheme() {
+    const name = themeForm.name.trim()
+    if (!name || name.length > 100) {
+      setThemeFormError(!name ? 'Theme name is required' : 'Theme name must be 100 characters or less')
+      return
+    }
     try {
       if (editingTheme) {
         const updated = await updateTheme(editingTheme.id, {
-          name: themeForm.name,
+          name,
           rarity: themeForm.rarity,
           from_color: themeForm.from,
           to_color: themeForm.to,
         })
         setThemes((prev) => prev.map((t) => (t.id === editingTheme.id ? updated : t)))
       } else {
-        const slug = themeForm.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-        if (!slug) {
-          setThemeFormError('Theme name is required')
-          return
-        }
+        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
         if (themes.some((t) => t.id === slug)) {
           setThemeFormError('A theme with this slug already exists')
           return
         }
         const created = await createTheme({
           slug,
-          name: themeForm.name,
+          name,
           rarity: themeForm.rarity,
           from_color: themeForm.from,
           to_color: themeForm.to,
@@ -119,7 +120,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
 
   // --- Specialty handlers ---
   async function handleAddSpecialty() {
-    if (!newSpecName.trim()) return
+    if (!newSpecName.trim() || newSpecName.trim().length > 50) return
     try {
       const created = await createSpecialty(newSpecName.trim())
       setSpecialties((prev) => [...prev, created])
@@ -130,7 +131,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
   }
 
   async function handleUpdateSpecialty(id: string) {
-    if (!editingSpecName.trim()) return
+    if (!editingSpecName.trim() || editingSpecName.trim().length > 50) return
     try {
       const updated = await updateSpecialty(id, editingSpecName.trim())
       setSpecialties((prev) => prev.map((s) => (s.id === id ? updated : s)))
@@ -151,7 +152,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
 
   // --- Description handlers ---
   async function handleAddDescription() {
-    if (!newDescText.trim()) return
+    if (!newDescText.trim() || newDescText.trim().length > 500) return
     try {
       const created = await createDescription(newDescText.trim())
       setDescriptions((prev) => [...prev, created])
@@ -162,7 +163,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
   }
 
   async function handleUpdateDescription(id: string) {
-    if (!editingDescText.trim()) return
+    if (!editingDescText.trim() || editingDescText.trim().length > 500) return
     try {
       const updated = await updateDescription(id, editingDescText.trim())
       setDescriptions((prev) => prev.map((d) => (d.id === id ? updated : d)))
@@ -218,6 +219,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
                 value={themeForm.name}
                 onChange={(e) => setThemeForm({ ...themeForm, name: e.target.value })}
                 className={styles.input}
+                maxLength={100}
               />
 
               <label className={styles.label}>RARITY</label>
@@ -294,6 +296,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
             onChange={(e) => setNewSpecName(e.target.value)}
             placeholder="New specialty name"
             className={styles.input}
+            maxLength={50}
             onKeyDown={(e) => e.key === 'Enter' && handleAddSpecialty()}
           />
           <button className={styles.addBtn} onClick={handleAddSpecialty}>+ Add</button>
@@ -309,6 +312,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
                     value={editingSpecName}
                     onChange={(e) => setEditingSpecName(e.target.value)}
                     className={styles.inlineInput}
+                    maxLength={50}
                     onKeyDown={(e) => e.key === 'Enter' && handleUpdateSpecialty(spec.id)}
                     autoFocus
                   />
@@ -340,6 +344,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
             onChange={(e) => setNewDescText(e.target.value)}
             placeholder="New description text"
             className={styles.input}
+            maxLength={500}
             onKeyDown={(e) => e.key === 'Enter' && handleAddDescription()}
           />
           <button className={styles.addBtn} onClick={handleAddDescription}>+ Add</button>
@@ -355,6 +360,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
                     value={editingDescText}
                     onChange={(e) => setEditingDescText(e.target.value)}
                     className={styles.inlineInput}
+                    maxLength={500}
                     onKeyDown={(e) => e.key === 'Enter' && handleUpdateDescription(desc.id)}
                     autoFocus
                   />
