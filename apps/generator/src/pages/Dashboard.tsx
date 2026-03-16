@@ -41,15 +41,20 @@ export function Dashboard({ onLogout }: DashboardProps) {
 
   async function loadAll() {
     setLoading(true)
-    const [t, s, d] = await Promise.all([
-      fetchThemes(),
-      fetchSpecialties(),
-      fetchDescriptions(),
-    ])
-    setThemes(t)
-    setSpecialties(s)
-    setDescriptions(d)
-    setLoading(false)
+    try {
+      const [t, s, d] = await Promise.all([
+        fetchThemes(),
+        fetchSpecialties(),
+        fetchDescriptions(),
+      ])
+      setThemes(t)
+      setSpecialties(s)
+      setDescriptions(d)
+    } catch (err) {
+      console.error('Failed to load data:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   // --- Theme handlers ---
@@ -66,71 +71,103 @@ export function Dashboard({ onLogout }: DashboardProps) {
   }
 
   async function handleSaveTheme() {
-    if (editingTheme) {
-      const updated = await updateTheme(editingTheme.id, {
-        name: themeForm.name,
-        rarity: themeForm.rarity,
-        from_color: themeForm.from,
-        to_color: themeForm.to,
-      })
-      setThemes((prev) => prev.map((t) => (t.id === editingTheme.id ? updated : t)))
-    } else {
-      const slug = themeForm.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-      const created = await createTheme({
-        slug,
-        name: themeForm.name,
-        rarity: themeForm.rarity,
-        from_color: themeForm.from,
-        to_color: themeForm.to,
-      })
-      setThemes((prev) => [...prev, created])
+    try {
+      if (editingTheme) {
+        const updated = await updateTheme(editingTheme.id, {
+          name: themeForm.name,
+          rarity: themeForm.rarity,
+          from_color: themeForm.from,
+          to_color: themeForm.to,
+        })
+        setThemes((prev) => prev.map((t) => (t.id === editingTheme.id ? updated : t)))
+      } else {
+        const slug = themeForm.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+        const created = await createTheme({
+          slug,
+          name: themeForm.name,
+          rarity: themeForm.rarity,
+          from_color: themeForm.from,
+          to_color: themeForm.to,
+        })
+        setThemes((prev) => [...prev, created])
+      }
+      setShowThemeForm(false)
+    } catch (err) {
+      console.error('Failed to save theme:', err)
     }
-    setShowThemeForm(false)
   }
 
   async function handleDeleteTheme(slug: string) {
-    await deleteTheme(slug)
-    setThemes((prev) => prev.filter((t) => t.id !== slug))
+    try {
+      await deleteTheme(slug)
+      setThemes((prev) => prev.filter((t) => t.id !== slug))
+    } catch (err) {
+      console.error('Failed to delete theme:', err)
+    }
   }
 
   // --- Specialty handlers ---
   async function handleAddSpecialty() {
     if (!newSpecName.trim()) return
-    const created = await createSpecialty(newSpecName.trim())
-    setSpecialties((prev) => [...prev, created])
-    setNewSpecName('')
+    try {
+      const created = await createSpecialty(newSpecName.trim())
+      setSpecialties((prev) => [...prev, created])
+      setNewSpecName('')
+    } catch (err) {
+      console.error('Failed to add specialty:', err)
+    }
   }
 
   async function handleUpdateSpecialty(id: string) {
     if (!editingSpecName.trim()) return
-    const updated = await updateSpecialty(id, editingSpecName.trim())
-    setSpecialties((prev) => prev.map((s) => (s.id === id ? updated : s)))
-    setEditingSpecId(null)
+    try {
+      const updated = await updateSpecialty(id, editingSpecName.trim())
+      setSpecialties((prev) => prev.map((s) => (s.id === id ? updated : s)))
+      setEditingSpecId(null)
+    } catch (err) {
+      console.error('Failed to update specialty:', err)
+    }
   }
 
   async function handleDeleteSpecialty(id: string) {
-    await deleteSpecialty(id)
-    setSpecialties((prev) => prev.filter((s) => s.id !== id))
+    try {
+      await deleteSpecialty(id)
+      setSpecialties((prev) => prev.filter((s) => s.id !== id))
+    } catch (err) {
+      console.error('Failed to delete specialty:', err)
+    }
   }
 
   // --- Description handlers ---
   async function handleAddDescription() {
     if (!newDescText.trim()) return
-    const created = await createDescription(newDescText.trim())
-    setDescriptions((prev) => [...prev, created])
-    setNewDescText('')
+    try {
+      const created = await createDescription(newDescText.trim())
+      setDescriptions((prev) => [...prev, created])
+      setNewDescText('')
+    } catch (err) {
+      console.error('Failed to add description:', err)
+    }
   }
 
   async function handleUpdateDescription(id: string) {
     if (!editingDescText.trim()) return
-    const updated = await updateDescription(id, editingDescText.trim())
-    setDescriptions((prev) => prev.map((d) => (d.id === id ? updated : d)))
-    setEditingDescId(null)
+    try {
+      const updated = await updateDescription(id, editingDescText.trim())
+      setDescriptions((prev) => prev.map((d) => (d.id === id ? updated : d)))
+      setEditingDescId(null)
+    } catch (err) {
+      console.error('Failed to update description:', err)
+    }
   }
 
   async function handleDeleteDescription(id: string) {
-    await deleteDescription(id)
-    setDescriptions((prev) => prev.filter((d) => d.id !== id))
+    try {
+      await deleteDescription(id)
+      setDescriptions((prev) => prev.filter((d) => d.id !== id))
+    } catch (err) {
+      console.error('Failed to delete description:', err)
+    }
   }
 
   async function handleLogout() {
