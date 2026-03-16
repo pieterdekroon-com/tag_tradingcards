@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { useSupabase } from './client'
+import { useTradingcardsContext } from './client'
 import type { TradingcardsProps, Rarity } from './types'
 import './Tradingcards.css'
 
@@ -18,48 +17,15 @@ const FALLBACK_THEME: ThemeData = {
 }
 
 export function Tradingcards({ name, image, theme, specialties, description, className }: TradingcardsProps) {
-  const supabase = useSupabase()
-  const [themeData, setThemeData] = useState<ThemeData | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { themeCache } = useTradingcardsContext()
 
-  useEffect(() => {
-    let cancelled = false
+  const cached = themeCache.get(theme)
+  const t: ThemeData = cached
+    ? { name: cached.name, rarity: cached.rarity, from: cached.from, to: cached.to }
+    : FALLBACK_THEME
 
-    supabase
-      .from('themes')
-      .select('name, rarity, from_color, to_color')
-      .eq('slug', theme)
-      .single()
-      .then(({ data, error }) => {
-        if (cancelled) return
-        if (error || !data) {
-          console.warn(`[tradingcards] Theme "${theme}" not found, using fallback`)
-          setThemeData(FALLBACK_THEME)
-        } else {
-          setThemeData({
-            name: data.name,
-            rarity: data.rarity,
-            from: data.from_color,
-            to: data.to_color,
-          })
-        }
-        setLoading(false)
-      })
-
-    return () => { cancelled = true }
-  }, [supabase, theme])
-
-  const t = themeData ?? FALLBACK_THEME
   const rarity = t.rarity.toLowerCase()
   const gradient = `linear-gradient(135deg, ${t.from}, ${t.to})`
-
-  if (loading) {
-    return (
-      <div className={`tc-card tc-skeleton ${className ?? ''}`}>
-        <div className="tc-card-inner" />
-      </div>
-    )
-  }
 
   return (
     <div className={`tc-card tc-${rarity} ${className ?? ''}`}>
