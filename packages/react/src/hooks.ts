@@ -9,11 +9,14 @@ export function useThemes() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    let cancelled = false
+
     supabase
       .from('themes')
       .select('slug, name, rarity, from_color, to_color')
       .order('created_at')
       .then(({ data, error }) => {
+        if (cancelled) return
         if (error) {
           setError(error.message)
           console.warn('[tradingcards] Failed to fetch themes:', error.message)
@@ -30,6 +33,8 @@ export function useThemes() {
         }
         setLoading(false)
       })
+
+    return () => { cancelled = true }
   }, [supabase])
 
   return { themes, loading, error }
@@ -42,11 +47,14 @@ export function useSpecialties() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    let cancelled = false
+
     supabase
       .from('specialties')
       .select('id, name')
       .order('created_at')
       .then(({ data, error }) => {
+        if (cancelled) return
         if (error) {
           setError(error.message)
           console.warn('[tradingcards] Failed to fetch specialties:', error.message)
@@ -55,6 +63,8 @@ export function useSpecialties() {
         }
         setLoading(false)
       })
+
+    return () => { cancelled = true }
   }, [supabase])
 
   return { specialties, loading, error }
@@ -67,11 +77,14 @@ export function useDescriptions() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    let cancelled = false
+
     supabase
       .from('descriptions')
       .select('id, text')
       .order('created_at')
       .then(({ data, error }) => {
+        if (cancelled) return
         if (error) {
           setError(error.message)
           console.warn('[tradingcards] Failed to fetch descriptions:', error.message)
@@ -80,6 +93,8 @@ export function useDescriptions() {
         }
         setLoading(false)
       })
+
+    return () => { cancelled = true }
   }, [supabase])
 
   return { descriptions, loading, error }

@@ -23,12 +23,15 @@ export function Tradingcards({ name, image, theme, specialties, description, cla
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let cancelled = false
+
     supabase
       .from('themes')
       .select('name, rarity, from_color, to_color')
       .eq('slug', theme)
       .single()
       .then(({ data, error }) => {
+        if (cancelled) return
         if (error || !data) {
           console.warn(`[tradingcards] Theme "${theme}" not found, using fallback`)
           setThemeData(FALLBACK_THEME)
@@ -42,6 +45,8 @@ export function Tradingcards({ name, image, theme, specialties, description, cla
         }
         setLoading(false)
       })
+
+    return () => { cancelled = true }
   }, [supabase, theme])
 
   const t = themeData ?? FALLBACK_THEME
