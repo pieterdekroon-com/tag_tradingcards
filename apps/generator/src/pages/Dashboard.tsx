@@ -25,6 +25,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
   const [editingTheme, setEditingTheme] = useState<Theme | null>(null)
   const [themeForm, setThemeForm] = useState({ slug: '', name: '', rarity: 'Common' as Rarity, from: '#000000', to: '#000000' })
   const [showThemeForm, setShowThemeForm] = useState(false)
+  const [themeFormError, setThemeFormError] = useState('')
 
   // Simple inline edit states
   const [editingSpecId, setEditingSpecId] = useState<string | null>(null)
@@ -61,12 +62,14 @@ export function Dashboard({ onLogout }: DashboardProps) {
   function openNewTheme() {
     setEditingTheme(null)
     setThemeForm({ slug: '', name: '', rarity: 'Common', from: '#000000', to: '#000000' })
+    setThemeFormError('')
     setShowThemeForm(true)
   }
 
   function openEditTheme(theme: Theme) {
     setEditingTheme(theme)
     setThemeForm({ slug: theme.id, name: theme.name, rarity: theme.rarity, from: theme.from, to: theme.to })
+    setThemeFormError('')
     setShowThemeForm(true)
   }
 
@@ -82,6 +85,14 @@ export function Dashboard({ onLogout }: DashboardProps) {
         setThemes((prev) => prev.map((t) => (t.id === editingTheme.id ? updated : t)))
       } else {
         const slug = themeForm.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+        if (!slug) {
+          setThemeFormError('Theme name is required')
+          return
+        }
+        if (themes.some((t) => t.id === slug)) {
+          setThemeFormError('A theme with this slug already exists')
+          return
+        }
         const created = await createTheme({
           slug,
           name: themeForm.name,
@@ -198,6 +209,8 @@ export function Dashboard({ onLogout }: DashboardProps) {
           <div className={styles.modal}>
             <div className={styles.modalContent}>
               <h3 className={styles.modalTitle}>{editingTheme ? 'Edit Theme' : 'New Theme'}</h3>
+
+              {themeFormError && <div className={styles.error}>{themeFormError}</div>}
 
               <label className={styles.label}>NAME</label>
               <input
