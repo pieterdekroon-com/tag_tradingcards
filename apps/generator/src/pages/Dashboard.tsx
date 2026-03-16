@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import type { Theme } from '../types'
+import type { Theme, Rarity } from '../types'
 import type { DbSpecialty, DbDescription } from '../lib/api'
 import {
   fetchThemes, createTheme, updateTheme, deleteTheme,
@@ -12,8 +12,6 @@ import styles from './Dashboard.module.css'
 interface DashboardProps {
   onLogout: () => void
 }
-
-type Rarity = 'Common' | 'Rare' | 'Epic' | 'Legendary'
 
 export function Dashboard({ onLogout }: DashboardProps) {
   const [themes, setThemes] = useState<Theme[]>([])
