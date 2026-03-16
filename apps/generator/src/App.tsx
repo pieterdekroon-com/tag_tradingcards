@@ -61,7 +61,7 @@ function App() {
   if (authLoading) return null
 
   if (!session) {
-    return <Login onLogin={() => {}} />
+    return <Login />
   }
 
   return (

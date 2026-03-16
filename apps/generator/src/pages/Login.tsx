@@ -2,11 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { supabase } from '../lib/supabase'
 import styles from './Login.module.css'
 
-interface LoginProps {
-  onLogin: () => void
-}
-
-export function Login({ onLogin }: LoginProps) {
+export function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -22,8 +18,6 @@ export function Login({ onLogin }: LoginProps) {
     if (authError) {
       setError(authError.message)
       setLoading(false)
-    } else {
-      onLogin()
     }
   }
 
