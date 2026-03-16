@@ -31,6 +31,7 @@ function App() {
   const [themes, setThemes] = useState<Theme[]>([])
   const [specialties, setSpecialties] = useState<DbSpecialty[]>([])
   const [descriptions, setDescriptions] = useState<DbDescription[]>([])
+  const [previewStale, setPreviewStale] = useState(true)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -45,18 +46,19 @@ function App() {
     return () => subscription.unsubscribe()
   }, [])
 
-  // Load data when switching to preview
+  // Load data when switching to preview (only if stale)
   useEffect(() => {
-    if (view === 'preview' && session) {
+    if (view === 'preview' && session && previewStale) {
       Promise.all([fetchThemes(), fetchSpecialties(), fetchDescriptions()]).then(
         ([t, s, d]) => {
           setThemes(t)
           setSpecialties(s)
           setDescriptions(d)
+          setPreviewStale(false)
         }
       )
     }
-  }, [view, session])
+  }, [view, session, previewStale])
 
   if (authLoading) return null
 
@@ -69,7 +71,7 @@ function App() {
       <nav className={styles.nav}>
         <button
           className={`${styles.tab} ${view === 'dashboard' ? styles.tabActive : ''}`}
-          onClick={() => setView('dashboard')}
+          onClick={() => { setView('dashboard'); setPreviewStale(true) }}
         >
           Dashboard
         </button>
