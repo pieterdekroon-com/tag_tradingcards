@@ -19,7 +19,8 @@ export async function getCroppedImage(imageSrc: string, pixelCrop: PixelCrop): P
   const canvas = document.createElement('canvas');
   canvas.width = pixelCrop.width;
   canvas.height = pixelCrop.height;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Could not get canvas 2d context');
 
   ctx.drawImage(
     image,
