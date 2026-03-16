@@ -185,10 +185,10 @@ export function Dashboard({ onLogout }: DashboardProps) {
     onLogout()
   }
 
-  if (loading) return <div className={styles.loading}>Loading...</div>
+  if (loading) return <div className={styles.loading} role="status">Loading...</div>
 
   return (
-    <div className={styles.dashboard}>
+    <main className={styles.dashboard}>
       <header className={styles.header}>
         <div>
           <h1 className={styles.title}>TRADINGCARDS</h1>
@@ -205,14 +205,15 @@ export function Dashboard({ onLogout }: DashboardProps) {
         </div>
 
         {showThemeForm && (
-          <div className={styles.modal}>
+          <dialog className={styles.modal} open>
             <div className={styles.modalContent}>
               <h3 className={styles.modalTitle}>{editingTheme ? 'Edit Theme' : 'New Theme'}</h3>
 
-              {themeFormError && <div className={styles.error}>{themeFormError}</div>}
+              {themeFormError && <div className={styles.error} role="alert">{themeFormError}</div>}
 
-              <label className={styles.label}>NAME</label>
+              <label className={styles.label} htmlFor="theme-name">NAME</label>
               <input
+                id="theme-name"
                 type="text"
                 value={themeForm.name}
                 onChange={(e) => setThemeForm({ ...themeForm, name: e.target.value })}
@@ -220,12 +221,14 @@ export function Dashboard({ onLogout }: DashboardProps) {
                 maxLength={100}
               />
 
-              <label className={styles.label}>RARITY</label>
-              <div className={styles.rarityRow}>
+              <label className={styles.label} id="rarity-label">RARITY</label>
+              <div className={styles.rarityRow} role="radiogroup" aria-labelledby="rarity-label">
                 {(['Common', 'Rare', 'Epic', 'Legendary'] as Rarity[]).map((r) => (
                   <button
                     key={r}
                     type="button"
+                    role="radio"
+                    aria-checked={themeForm.rarity === r}
                     className={`${styles.rarityChip} ${themeForm.rarity === r ? styles.rarityActive : ''}`}
                     onClick={() => setThemeForm({ ...themeForm, rarity: r })}
                   >
@@ -236,8 +239,9 @@ export function Dashboard({ onLogout }: DashboardProps) {
 
               <div className={styles.colorRow}>
                 <div>
-                  <label className={styles.label}>FROM</label>
+                  <label className={styles.label} htmlFor="theme-color-from">FROM</label>
                   <input
+                    id="theme-color-from"
                     type="color"
                     value={themeForm.from}
                     onChange={(e) => setThemeForm({ ...themeForm, from: e.target.value })}
@@ -245,11 +249,13 @@ export function Dashboard({ onLogout }: DashboardProps) {
                 </div>
                 <div
                   className={styles.colorPreview}
+                  role="presentation"
                   style={{ background: `linear-gradient(135deg, ${themeForm.from}, ${themeForm.to})` }}
                 />
                 <div>
-                  <label className={styles.label}>TO</label>
+                  <label className={styles.label} htmlFor="theme-color-to">TO</label>
                   <input
+                    id="theme-color-to"
                     type="color"
                     value={themeForm.to}
                     onChange={(e) => setThemeForm({ ...themeForm, to: e.target.value })}
@@ -262,7 +268,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
                 <button className={styles.saveBtn} onClick={handleSaveTheme}>Save</button>
               </div>
             </div>
-          </div>
+          </dialog>
         )}
 
         <div className={styles.list}>
@@ -288,7 +294,9 @@ export function Dashboard({ onLogout }: DashboardProps) {
         </div>
 
         <div className={styles.inlineAdd}>
+          <label htmlFor="new-specialty" className="sr-only">New specialty name</label>
           <input
+            id="new-specialty"
             type="text"
             value={newSpecName}
             onChange={(e) => setNewSpecName(e.target.value)}
@@ -336,7 +344,9 @@ export function Dashboard({ onLogout }: DashboardProps) {
         </div>
 
         <div className={styles.inlineAdd}>
+          <label htmlFor="new-description" className="sr-only">New description text</label>
           <input
+            id="new-description"
             type="text"
             value={newDescText}
             onChange={(e) => setNewDescText(e.target.value)}
@@ -376,6 +386,6 @@ export function Dashboard({ onLogout }: DashboardProps) {
           ))}
         </div>
       </section>
-    </div>
+    </main>
   )
 }

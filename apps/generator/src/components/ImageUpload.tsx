@@ -61,9 +61,9 @@ export function ImageUpload({ image, onChange }: ImageUploadProps) {
 
   const modal = rawImage
     ? createPortal(
-        <div className={styles.overlay} onClick={handleCancelCrop}>
+        <dialog className={styles.overlay} open onClick={handleCancelCrop}>
           <div className={styles.cropModal} onClick={(e) => e.stopPropagation()}>
-            <span className={styles.modalTitle}>Crop Image</span>
+            <h2 className={styles.modalTitle}>Crop Image</h2>
             <div className={styles.cropContainer}>
               <Cropper
                 image={rawImage}
@@ -76,8 +76,9 @@ export function ImageUpload({ image, onChange }: ImageUploadProps) {
               />
             </div>
             <div className={styles.zoomRow}>
-              <span className={styles.zoomLabel}>Zoom</span>
+              <label className={styles.zoomLabel} htmlFor="crop-zoom">Zoom</label>
               <input
+                id="crop-zoom"
                 type="range"
                 min={1}
                 max={3}
@@ -96,7 +97,7 @@ export function ImageUpload({ image, onChange }: ImageUploadProps) {
               </button>
             </div>
           </div>
-        </div>,
+        </dialog>,
         document.body,
       )
     : null;
@@ -105,9 +106,13 @@ export function ImageUpload({ image, onChange }: ImageUploadProps) {
     <div
       className={`${styles.dropzone} ${dragging ? styles.dragging : ''} ${image ? styles.hasImage : ''}`}
       onClick={() => inputRef.current?.click()}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputRef.current?.click() } }}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={() => setDragging(false)}
+      role="button"
+      tabIndex={0}
+      aria-label={image ? 'Change image' : 'Upload image'}
     >
       {image ? (
         <img src={image} alt="Card" className={styles.preview} />

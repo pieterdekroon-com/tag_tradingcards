@@ -28,20 +28,21 @@ export function Tradingcards({ name, image, theme, specialties, description, cla
   const gradient = `linear-gradient(135deg, ${t.from}, ${t.to})`
 
   return (
-    <div className={`tc-card tc-${rarity} ${className ?? ''}`}>
+    <article className={`tc-card tc-${rarity} ${className ?? ''}`}>
       <div className="tc-card-border" style={{ background: gradient }}>
         <div className="tc-card-inner">
-          <div className="tc-brand">TRADINGCARDS</div>
+          <header className="tc-brand">TRADINGCARDS</header>
 
-          <div className="tc-image-frame">
-            {image ? (
-              <img src={image} alt={name} className="tc-image" />
-            ) : (
-              <div className="tc-image-placeholder" />
-            )}
-          </div>
-
-          <div className="tc-name">{name}</div>
+          <figure className="tc-figure">
+            <div className="tc-image-frame">
+              {image ? (
+                <img src={image} alt={name} className="tc-image" />
+              ) : (
+                <div className="tc-image-placeholder" />
+              )}
+            </div>
+            <figcaption className="tc-name">{name}</figcaption>
+          </figure>
 
           <div className="tc-rarity-badge">
             <span className={`tc-rarity-dot tc-dot-${rarity}`} />
@@ -49,18 +50,18 @@ export function Tradingcards({ name, image, theme, specialties, description, cla
           </div>
 
           {specialties.length > 0 && (
-            <div className="tc-specialties">
+            <ul className="tc-specialties" role="list">
               {specialties.map((spec) => (
-                <span key={spec} className="tc-badge">{spec}</span>
+                <li key={spec} className="tc-badge">{spec}</li>
               ))}
-            </div>
+            </ul>
           )}
 
           {description && (
-            <div className="tc-description">{description}</div>
+            <p className="tc-description">{description}</p>
           )}
         </div>
       </div>
-    </div>
+    </article>
   )
 }

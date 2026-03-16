@@ -28,8 +28,9 @@ export function CardForm({ card, onChange, themes, specialties, descriptions }: 
       <h1 className={styles.title}>TAG CARDS</h1>
       <p className={styles.subtitle}>Card Generator</p>
 
-      <label className={styles.label}>NAME</label>
+      <label className={styles.label} htmlFor="card-name">NAME</label>
       <input
+        id="card-name"
         type="text"
         value={card.name}
         onChange={(e) => update({ name: e.target.value })}
@@ -37,15 +38,16 @@ export function CardForm({ card, onChange, themes, specialties, descriptions }: 
         className={styles.input}
       />
 
-      <label className={styles.label}>IMAGE</label>
+      <label className={styles.label} id="card-image-label">IMAGE</label>
       <ImageUpload image={card.image} onChange={(image) => update({ image })} />
 
-      <label className={styles.label}>SPECIALTIES</label>
-      <div className={styles.chipGrid}>
+      <label className={styles.label} id="card-specialties-label">SPECIALTIES</label>
+      <div className={styles.chipGrid} role="group" aria-labelledby="card-specialties-label">
         {specialties.map((s) => (
           <button
             key={s.id}
             type="button"
+            aria-pressed={card.specialties.includes(s.name)}
             className={`${styles.chip} ${card.specialties.includes(s.name) ? styles.chipSelected : ''}`}
             onClick={() => toggleSpecialty(s.name)}
           >
@@ -54,8 +56,9 @@ export function CardForm({ card, onChange, themes, specialties, descriptions }: 
         ))}
       </div>
 
-      <label className={styles.label}>DESCRIPTION</label>
+      <label className={styles.label} htmlFor="card-description">DESCRIPTION</label>
       <select
+        id="card-description"
         value={card.description}
         onChange={(e) => update({ description: e.target.value })}
         className={styles.select}
@@ -66,7 +69,7 @@ export function CardForm({ card, onChange, themes, specialties, descriptions }: 
         ))}
       </select>
 
-      <label className={styles.label}>THEME</label>
+      <label className={styles.label} id="card-theme-label">THEME</label>
       <ThemePicker
         selected={card.theme}
         onChange={(theme) => update({ theme })}

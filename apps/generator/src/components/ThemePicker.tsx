@@ -11,7 +11,7 @@ const rarityOrder: Rarity[] = ['Common', 'Rare', 'Epic', 'Legendary'];
 
 export function ThemePicker({ selected, onChange, themes }: ThemePickerProps) {
   return (
-    <div className={styles.container}>
+    <div className={styles.container} role="radiogroup" aria-labelledby="card-theme-label">
       {rarityOrder.map((r) => {
         const group = themes.filter((t) => t.rarity === r);
         if (group.length === 0) return null;
@@ -25,6 +25,8 @@ export function ThemePicker({ selected, onChange, themes }: ThemePickerProps) {
                 <div key={theme.id} className={styles.tileWrapper}>
                   <button
                     type="button"
+                    role="radio"
+                    aria-checked={selected === theme.id}
                     className={`${styles.tile} ${styles[theme.rarity.toLowerCase()]} ${selected === theme.id ? styles.selected : ''}`}
                     onClick={() => onChange(theme.id)}
                     aria-label={`${theme.name} (${theme.rarity})`}

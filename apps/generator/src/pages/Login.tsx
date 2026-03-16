@@ -22,15 +22,16 @@ export function Login() {
   }
 
   return (
-    <div className={styles.container}>
+    <main className={styles.container}>
       <form className={styles.form} onSubmit={handleSubmit}>
         <h1 className={styles.title}>TRADINGCARDS</h1>
         <p className={styles.subtitle}>Generator Login</p>
 
-        {error && <div className={styles.error}>{error}</div>}
+        {error && <div className={styles.error} role="alert">{error}</div>}
 
-        <label className={styles.label}>EMAIL</label>
+        <label className={styles.label} htmlFor="login-email">EMAIL</label>
         <input
+          id="login-email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -38,8 +39,9 @@ export function Login() {
           required
         />
 
-        <label className={styles.label}>PASSWORD</label>
+        <label className={styles.label} htmlFor="login-password">PASSWORD</label>
         <input
+          id="login-password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -51,6 +53,6 @@ export function Login() {
           {loading ? 'Signing in...' : 'Sign in'}
         </button>
       </form>
-    </div>
+    </main>
   )
 }

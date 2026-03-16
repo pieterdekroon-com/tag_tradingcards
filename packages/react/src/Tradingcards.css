@@ -33,6 +33,15 @@
   opacity: 0.6;
 }
 
+.tc-figure {
+  width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
 .tc-image-frame {
   width: 100%;
   aspect-ratio: 4/3;
@@ -88,6 +97,9 @@
   flex-wrap: wrap;
   gap: 6px;
   justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .tc-badge {

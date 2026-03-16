@@ -86,8 +86,8 @@ function App() {
       {view === 'dashboard' ? (
         <Dashboard onLogout={() => setSession(null)} />
       ) : (
-        <div className={styles.layout}>
-          <div className={styles.formPanel}>
+        <main className={styles.layout}>
+          <section className={styles.formPanel}>
             <CardForm
               card={card}
               onChange={setCard}
@@ -95,11 +95,11 @@ function App() {
               specialties={specialties}
               descriptions={descriptions}
             />
-          </div>
-          <div className={styles.previewPanel}>
+          </section>
+          <section className={styles.previewPanel}>
             <CardPreview card={card} themes={themes} />
-          </div>
-        </div>
+          </section>
+        </main>
       )}
     </div>
   )

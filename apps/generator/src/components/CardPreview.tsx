@@ -29,10 +29,17 @@ export function CardPreview({ card, themes }: CardPreviewProps) {
   } as React.CSSProperties;
 
   return (
-    <div className={styles.wrapper} onClick={() => setFlipped((f) => !f)}>
+    <div
+      className={styles.wrapper}
+      onClick={() => setFlipped((f) => !f)}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setFlipped((f) => !f) } }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Trading card for ${card.name || 'unnamed player'}. Press to flip.`}
+    >
       <div className={`${styles.cardContainer} ${flipped ? styles.flipped : ''}`}>
         {/* ── Front ── */}
-        <div className={`${styles.card} ${styles.front} ${rarityClass}`} style={cardStyle}>
+        <article className={`${styles.card} ${styles.front} ${rarityClass}`} style={cardStyle}>
           <div className={styles.texture} />
           <div className={styles.sheen} />
 
@@ -89,10 +96,10 @@ export function CardPreview({ card, themes }: CardPreviewProps) {
               TAG
             </div>
           </div>
-        </div>
+        </article>
 
         {/* ── Back ── */}
-        <div className={`${styles.card} ${styles.back} ${rarityClass}`} style={cardStyle}>
+        <div className={`${styles.card} ${styles.back} ${rarityClass}`} style={cardStyle} aria-hidden="true">
           <div className={styles.texture} />
           <div className={styles.sheen} />
 
